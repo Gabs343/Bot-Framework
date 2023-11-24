@@ -22,4 +22,17 @@ class GUIFactory:
                     bd = 0,
                     highlightthickness = 0,
                     relief = "ridge")
+        
+    def get_button(self, parent: tk.Canvas, icon: str, event) -> tk.Button:
+        img = tk.PhotoImage(file=f'.\\assets\\icons\\{icon}.png')
+        button = tk.Button(
+            parent,
+            image=img,
+            borderwidth=0,
+            highlightthickness=0,
+            command=event,
+            relief="flat"
+        )
+        button.image = img
+        return button
     
