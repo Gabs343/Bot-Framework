@@ -11,3 +11,11 @@ class PrincipalCanvas(tk.Canvas):
         
         self.subcanvas = self.gui_factory.get_subcanvas(self)
         self.subcanvas.place(x=75, y=75)
+        
+        add_btn = self.gui_factory.get_button(parent=self, icon="add", event= lambda: print("add bot"))
+        add_btn.place(
+            x=495.0,
+            y=433.0,
+            width=70.0,
+            height=70.0
+        )
