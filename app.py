@@ -8,25 +8,38 @@ from canvas.principal_canvas import PrincipalCanvas
 class MainApp(tk.Tk):
     def __init__(self, *args, **kwargs) -> None:
         tk.Tk.__init__(self, *args, **kwargs)
-        self.gui_factory: GUIFactory = GUIFactory()
+        self.__bots_folder_path = '.\\bots'
+        self.__gui_factory: GUIFactory = GUIFactory()
         
-        self.title("App")
-        self.geometry("1036x565")
+        self.title('App')
+        self.geometry('1036x565')
         self.resizable(False, False)
-        self.configure(bg = "#112C5F")
+        self.configure(bg = '#112C5F')
         
-        self.current_canvas = None
+        self.__current_canvas = None
         
-        self.canvas_objects = self.gui_factory.get_canvas(self, (PrincipalCanvas, ))
+        self.__canvas_objects = self.__gui_factory.get_canvas(self, (PrincipalCanvas, ))
         
-        self.show_canvas("PrincipalCanvas")
+        self.show_canvas('PrincipalCanvas')
+        
+    @property
+    def gui_factory(self) -> GUIFactory:
+        return self.__gui_factory
+    
+    @property
+    def bots_folder_path(self) -> str:
+        return self.__bots_folder_path
         
     def show_canvas(self, name: str):
-        if self.current_canvas:
-            self.current_canvas.pack_forget()
+        if self.__current_canvas:
+            self.__current_canvas.pack_forget()
             
-        self.current_canvas = self.canvas_objects[name]
-        self.current_canvas.pack()
+        self.__current_canvas = self.__canvas_objects[name]
+        self.__current_canvas.pack()
+        
+    def create_bots_folder(self) -> None:
+        if(not os.path.exists(self.__bots_folder_path)):
+            os.makedirs(self.__bots_folder_path)
         
 def main():
     app = MainApp()

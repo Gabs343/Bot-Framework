@@ -1,9 +1,10 @@
 import tkinter as tk
+import os
 
 from gui_factory import GUIFactory
 
 class PrincipalCanvas(tk.Canvas): 
-    def __init__(self, parent, **kwargs) -> None:
+    def __init__(self, parent: tk.Tk, **kwargs) -> None:
         super().__init__(parent, **kwargs)
         
         self.parent = parent
@@ -18,8 +19,12 @@ class PrincipalCanvas(tk.Canvas):
             width=70.0, height=70.0
         )
         
-        refresh_btn = self.gui_factory.get_button(parent=self, icon="refresh", event= lambda: print("reload container"))
+        refresh_btn = self.gui_factory.get_button(parent=self, icon="refresh", event= lambda: self.refresh())
         refresh_btn.place(
             x=915.0, y=29.0,
             width=50.0, height=50.0
         )
+        
+    def refresh(self) -> None:
+        self.parent.create_bots_folder()
+        bots_folders = [folder_name for folder_name in os.listdir(self.parent.bots_folder_path) if os.path.join(self.parent.bots_folder_path, folder_name)]
