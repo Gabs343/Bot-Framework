@@ -14,3 +14,12 @@ class GUIFactory:
                                         relief = "ridge")
         return canvas
     
+    def get_subcanvas(self, parent: tk.Canvas) -> tk.Canvas:
+        return tk.Canvas(parent,
+                    bg = "#112C5F",
+                    height = 335,
+                    width = 897,
+                    bd = 0,
+                    highlightthickness = 0,
+                    relief = "ridge")
+    
