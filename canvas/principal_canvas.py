@@ -19,3 +19,11 @@ class PrincipalCanvas(tk.Canvas):
             width=70.0,
             height=70.0
         )
+        
+        refresh_btn = self.gui_factory.get_button(parent=self, icon="refresh", event= lambda: print("reload container"))
+        refresh_btn.place(
+            x=915.0,
+            y=29.0,
+            width=50.0,
+            height=50.0
+        )
