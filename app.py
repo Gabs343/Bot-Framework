@@ -18,7 +18,8 @@ class MainApp(tk.Tk):
         
         self.__current_canvas = None
         
-        self.__canvas_objects = self.__gui_factory.get_canvas(self, (PrincipalCanvas, ))
+        self.__canvas_objects = self.__gui_factory.get_canvas(parent=self, 
+                                                              classes=(PrincipalCanvas, ))
         
         self.show_canvas('PrincipalCanvas')
         
