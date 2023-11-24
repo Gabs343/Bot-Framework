@@ -1,4 +1,6 @@
 import tkinter as tk
+from tkinter import filedialog
+import shutil
 import os
 
 from gui_factory import GUIFactory
@@ -14,7 +16,7 @@ class PrincipalCanvas(tk.Canvas):
         self.subcanvas = self.gui_factory.get_subcanvas(parent=self)
         self.subcanvas.place(x=75, y=75)
         
-        add_btn = self.gui_factory.get_button(parent=self, icon='add', event= lambda: print('add bot'))
+        add_btn = self.gui_factory.get_button(parent=self, icon='add', event= lambda: self.add_bot())
         add_btn.place(
             x=495.0, y=433.0,
             width=70.0, height=70.0
@@ -32,7 +34,7 @@ class PrincipalCanvas(tk.Canvas):
         self.parent.create_bots_folder()
         bots_folders = [folder_name for folder_name in os.listdir(self.parent.bots_folder_path)]
         new_instances = {}
-        
+        print(bots_folders)
         for folder in bots_folders:
             module = __import__(f'bots.{folder}.main', fromlist=['Main'])
             bot = getattr(module, 'Main')
@@ -43,3 +45,8 @@ class PrincipalCanvas(tk.Canvas):
                 new_instances[folder] = bot()
 
         self.bot_instances = new_instances
+        
+    def add_bot(self) -> None:
+        src_bot = filedialog.askdirectory()
+        shutil.move(src_bot, self.parent.bots_folder_path)
+        self.refresh()
