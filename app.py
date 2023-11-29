@@ -4,6 +4,7 @@ import os
 
 from gui_factory import GUIFactory
 from canvas.principal_canvas import PrincipalCanvas
+from canvas.settings_canvas import SettingCanvas
 
 class MainApp(tk.Tk):
     def __init__(self, *args, **kwargs) -> None:
@@ -19,9 +20,9 @@ class MainApp(tk.Tk):
         self.__current_canvas = None
         
         self.__canvas_objects = self.__gui_factory.get_canvas(parent=self, 
-                                                              classes=(PrincipalCanvas, ))
+                                                              classes=(PrincipalCanvas, SettingCanvas))
         
-        self.show_canvas('PrincipalCanvas')
+        self.show_canvas(name='PrincipalCanvas')
         
     @property
     def gui_factory(self) -> GUIFactory:
@@ -31,12 +32,14 @@ class MainApp(tk.Tk):
     def bots_folder_path(self) -> str:
         return self.__bots_folder_path
         
-    def show_canvas(self, name: str):
+    def show_canvas(self, name: str, **kwargs):
         if self.__current_canvas:
             self.__current_canvas.pack_forget()
             
         self.__current_canvas = self.__canvas_objects[name]
         self.__current_canvas.pack()
+        if(kwargs):
+            self.__current_canvas.show_settings(bot_folder=kwargs["bot_folder"], settings=kwargs["settings"])
         
     def create_bots_folder(self) -> None:
         if(not os.path.exists(self.__bots_folder_path)):
