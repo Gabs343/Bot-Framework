@@ -20,14 +20,16 @@ class PrincipalCanvas(tk.Canvas):
         add_btn = self.gui_factory.get_button(parent=self, 
                                               icon='add', 
                                               event= lambda: self.add_bot())
+        
+        refresh_btn = self.gui_factory.get_button(parent=self, 
+                                                  icon='refresh', 
+                                                  event= lambda: self.refresh())
+        
         add_btn.place(
             x=495.0, y=433.0,
             width=70.0, height=70.0
         )
         
-        refresh_btn = self.gui_factory.get_button(parent=self, 
-                                                  icon='refresh', 
-                                                  event= lambda: self.refresh())
         refresh_btn.place(
             x=915.0, y=29.0,
             width=50.0, height=50.0
@@ -66,7 +68,12 @@ class PrincipalCanvas(tk.Canvas):
             container = self.gui_factory.get_bot_container(parent=self.subcanvas, 
                                                            coordinates=(77.0, y), 
                                                            bot_instance=bot_instance)
-            container.set_button_event(button=2, event=lambda folder=folder: self.delete_bot(folder=folder))
+            container.set_button_event(button=1, 
+                                       event=lambda folder=folder, bot_instance=bot_instance: self.parent.show_canvas(name='SettingCanvas',
+                                                                                                       bot_folder=folder,
+                                                                                                       settings=bot_instance.settings_services))
+            container.set_button_event(button=2, 
+                                       event=lambda folder=folder: self.delete_bot(folder=folder))
             self.bot_containers.append(container)
             y += 125.0
             
@@ -74,7 +81,7 @@ class PrincipalCanvas(tk.Canvas):
         msg_delete = messagebox.askquestion('Delete Bot', 'Are you sure you want to delete this bot?',
                                 icon='warning')
         if(msg_delete == "yes"):
-            shutil.rmtree(f'bots/{folder}')
+            shutil.rmtree(f'{self.parent.bots_folder_path}\\{folder}')
         self.refresh()
 
             
