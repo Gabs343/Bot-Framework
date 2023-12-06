@@ -9,18 +9,18 @@ from canvas.settings_canvas import SettingCanvas
 class MainApp(tk.Tk):
     def __init__(self, *args, **kwargs) -> None:
         tk.Tk.__init__(self, *args, **kwargs)
-        self.__bots_folder_path = '.\\bots'
+        
+        self.__bots_folder_path: str = '.\\bots'
+        self.__current_canvas: tk.Canvas = None
         self.__gui_factory: GUIFactory = GUIFactory()
         
         self.title('App')
         self.geometry('1036x565')
-        self.resizable(False, False)
+        self.resizable(width=False, height=False)
         self.configure(bg = '#112C5F')
-        
-        self.__current_canvas = None
-        
-        self.__canvas_objects = self.__gui_factory.get_canvas(parent=self, 
-                                                              classes=(PrincipalCanvas, SettingCanvas))
+   
+        self.__canvas_objects: dict = self.__gui_factory.get_canvas(parent=self, 
+                                                                    classes=(PrincipalCanvas, SettingCanvas))
         
         self.show_canvas(name='PrincipalCanvas')
         
@@ -33,13 +33,14 @@ class MainApp(tk.Tk):
         return self.__bots_folder_path
         
     def show_canvas(self, name: str, **kwargs):
-        if self.__current_canvas:
+        if(self.__current_canvas):
             self.__current_canvas.pack_forget()
             
         self.__current_canvas = self.__canvas_objects[name]
         self.__current_canvas.pack()
         if(kwargs):
-            self.__current_canvas.show_settings(bot_folder=kwargs["bot_folder"], settings=kwargs["settings"])
+            self.__current_canvas.show_settings(bot_folder=kwargs["bot_folder"], 
+                                                settings=kwargs["settings"])
         
     def create_bots_folder(self) -> None:
         if(not os.path.exists(self.__bots_folder_path)):
