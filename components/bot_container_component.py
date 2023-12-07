@@ -10,6 +10,7 @@ class BotContainerComponent:
         self.shadow_offset = 3.0
         
         self.bot = bot
+        self.bot.set_status_changed_callback(callback=self.set_status)
         self.buttons = buttons
         
         self.place_rectangles()
@@ -33,7 +34,7 @@ class BotContainerComponent:
         
     def place_information(self) -> None:
         bot_name_id = self.parent.create_text(
-            100.0,
+            self.x_coordinate + 20,
             self.y_coordinate+23,
             anchor="nw",
             text=self.bot.bot_name,
@@ -42,7 +43,7 @@ class BotContainerComponent:
         )
 
         text_id = self.parent.create_text(
-            278.0,
+            self.x_coordinate + 250,
             self.y_coordinate+27,
             anchor="nw",
             text="STATUS:",
@@ -50,8 +51,8 @@ class BotContainerComponent:
             font=("RobotoRoman Bold", 14 * -1)
         )
 
-        bot_status_id = self.parent.create_text(
-            350.0,
+        self.bot_status_id = self.parent.create_text(
+            self.x_coordinate + 320,
             self.y_coordinate+27,
             anchor="nw",
             text=self.bot.status,
@@ -59,11 +60,15 @@ class BotContainerComponent:
             font=("RobotoRoman Regular", 16 * -1)
         )
         
+    def set_status(self, new_status: str):
+        self.parent.itemconfig(self.bot_status_id, text=new_status)
+        
+        
     def place_buttons(self) -> None:                
-        icon_x_coordinate = 661.0
+        icon_x_coordinate = 580.0
         margin = 62.0
         for button in self.buttons:
-            self.parent.create_window(icon_x_coordinate, 
+            self.parent.create_window(icon_x_coordinate + self.x_coordinate, 
                                     self.y_coordinate+30,
                                     width=45.0,
                                     height=45.0,
