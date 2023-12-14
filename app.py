@@ -12,21 +12,16 @@ class MainApp(tk.Tk):
         
         self.__bots_folder_path: str = '.\\bots'
         self.__current_canvas: tk.Canvas = None
-        self.__gui_factory: GUIFactory = GUIFactory()
         
         self.title('App')
         self.geometry('1036x565')
         self.resizable(width=False, height=False)
         self.configure(bg = '#112C5F')
    
-        self.__canvas_objects: dict = self.__gui_factory.get_canvas(parent=self, 
+        self.__canvas_objects: dict = GUIFactory.get_canvas(parent=self, 
                                                                     classes=(PrincipalCanvas, SettingCanvas))
         
         self.show_canvas(name='PrincipalCanvas')
-        
-    @property
-    def gui_factory(self) -> GUIFactory:
-        return self.__gui_factory
     
     @property
     def bots_folder_path(self) -> str:

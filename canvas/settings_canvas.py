@@ -9,12 +9,11 @@ class SettingCanvas(tk.Canvas):
         super().__init__(parent, **kwargs)
         
         self.__parent: tk.Tk = parent
-        self.__gui_factory: GUIFactory = parent.gui_factory
         
         self.create_gui_elements()
               
     def create_gui_elements(self):
-        self.subcanvas: tk.Canvas = self.__gui_factory.get_subcanvas(parent=self, dimensions=(897, 385))
+        self.subcanvas: tk.Canvas = GUIFactory.get_subcanvas(parent=self, dimensions=(897, 385))
         self.subcanvas.place(x=70, y=75)
         
         self.scrollbar = tk.Scrollbar(self, orient=tk.VERTICAL, command=self.subcanvas.yview)
@@ -26,7 +25,7 @@ class SettingCanvas(tk.Canvas):
         self.subcanvas.bind_all("<MouseWheel>", self.on_mousewheel)
         self.subcanvas.bind("<Configure>", self.on_configure)
         
-        back_btn: tk.Button = self.__gui_factory.get_button(parent=self, 
+        back_btn: tk.Button = GUIFactory.get_button(parent=self, 
                                                 icon='back', 
                                                 event= lambda: self.go_back())
         
@@ -35,7 +34,7 @@ class SettingCanvas(tk.Canvas):
             width=45.0, height=35.0
         )
         
-        self.__gui_factory.set_text_in_canvas(parent=self,
+        GUIFactory.set_text_in_canvas(parent=self,
                                               text="Settings",
                                               coordinates=(480.0, 40.0),
                                               size=32)
@@ -51,7 +50,7 @@ class SettingCanvas(tk.Canvas):
         y_title: float = 10.0
         for service in settings:
             
-            self.__gui_factory.set_text_in_canvas(parent=self.subcanvas,
+            GUIFactory.set_text_in_canvas(parent=self.subcanvas,
                                               text=service,
                                               coordinates=(400.0, y_title),
                                               size=27)
@@ -69,7 +68,7 @@ class SettingCanvas(tk.Canvas):
 
                 x_position = self.calculate_x_position(settings_quantity=len(service.settings), settings_count=settings_count)
                 
-                input = self.__gui_factory.get_custom_input(parent=self.subcanvas)
+                input = GUIFactory.get_custom_input(parent=self.subcanvas)
                 input.set_label(text=key, coordinates=(x_position-80, y_key))                
                 input.set_entry(coordinates=(x_position, y_entry+35))
                 

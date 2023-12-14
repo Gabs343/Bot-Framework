@@ -5,6 +5,7 @@ import threading
 import os
 
 from gui_factory import GUIFactory
+from components.bot_container_component import BotContainerComponent
 
 class PrincipalCanvas(tk.Canvas): 
     def __init__(self, parent: tk.Tk, **kwargs) -> None:
@@ -12,12 +13,11 @@ class PrincipalCanvas(tk.Canvas):
         
         self.__parent: tk.Tk = parent
         self.__bot_instances: dict = {}
-        self.__gui_factory: GUIFactory = parent.gui_factory
         
         self.create_gui_elements()
         
     def create_gui_elements(self) -> None:
-        self.subcanvas: tk.Canvas = self.__gui_factory.get_subcanvas(parent=self, dimensions=(897, 335))
+        self.subcanvas: tk.Canvas = GUIFactory.get_subcanvas(parent=self, dimensions=(897, 335))
         self.subcanvas.place(x=75, y=75)
         
         self.scrollbar = tk.Scrollbar(self, orient=tk.VERTICAL, command=self.subcanvas.yview)
@@ -26,11 +26,11 @@ class PrincipalCanvas(tk.Canvas):
         
         self.scrollbar.place(x= 70 +897, y=75, height=385)
         
-        add_btn: tk.Button = self.__gui_factory.get_button(parent=self, 
+        add_btn: tk.Button = GUIFactory.get_button(parent=self, 
                                               icon='add', 
                                               event= lambda: self.add_bot())
         
-        refresh_btn: tk.Button = self.__gui_factory.get_button(parent=self, 
+        refresh_btn: tk.Button = GUIFactory.get_button(parent=self, 
                                                   icon='refresh', 
                                                   event= lambda: self.refresh())
         
@@ -61,18 +61,16 @@ class PrincipalCanvas(tk.Canvas):
         y = 8.0
         for folder, bot_instance in self.__bot_instances.items():
             
-            container = self.__gui_factory.get_bot_container(parent=self.subcanvas, 
-                                                           coordinates=(77.0, y), 
-                                                           bot_instance=bot_instance)
+            container = BotContainerComponent(parent=self.subcanvas, coordinates=(77.0, y), bot=bot_instance)
             
-            container.set_button_event(button=0,
+            container.change_button_event(button='play',
                                        event=lambda bot=bot_instance: self.start_bot(bot=bot))
             
-            container.set_button_event(button=1, 
+            container.change_button_event(button='settings', 
                                        event=lambda folder=folder, bot_instance=bot_instance: self.__parent.show_canvas(name='SettingCanvas',
                                                                                                        bot_folder=folder,
                                                                                                        settings=bot_instance.settings_services))
-            container.set_button_event(button=2, 
+            container.change_button_event(button='delete', 
                                        event=lambda folder=folder: self.delete_bot(folder=folder))
             
             y += 125.0
