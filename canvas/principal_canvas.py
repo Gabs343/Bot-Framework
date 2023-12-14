@@ -17,7 +17,7 @@ class PrincipalCanvas(tk.Canvas):
         self.create_gui_elements()
         
     def create_gui_elements(self) -> None:
-        self.subcanvas: tk.Canvas = GUIFactory.get_subcanvas(parent=self, dimensions=(897, 335))
+        self.subcanvas: tk.Canvas = GUIFactory.get_subcanvas(parent=self, width=897, height=335, bg='#112C5F')
         self.subcanvas.place(x=75, y=75)
         
         self.scrollbar = tk.Scrollbar(self, orient=tk.VERTICAL, command=self.subcanvas.yview)
@@ -58,21 +58,25 @@ class PrincipalCanvas(tk.Canvas):
             self.subcanvas.yview_scroll(-1 * (event.delta // 120), "units")
         
     def create_bots_containers(self) -> None:
-        y = 8.0
+        y: float = 8.0
         for folder, bot_instance in self.__bot_instances.items():
+            container = BotContainerComponent(parent=self.subcanvas,
+                                              x=77.0, y=y, 
+                                              width=763.0, height=70.0,
+                                              bot=bot_instance)
             
-            container = BotContainerComponent(parent=self.subcanvas, coordinates=(77.0, y), bot=bot_instance)
             
             container.change_button_event(button='play',
                                        event=lambda bot=bot_instance: self.start_bot(bot=bot))
-            
+            '''
             container.change_button_event(button='settings', 
                                        event=lambda folder=folder, bot_instance=bot_instance: self.__parent.show_canvas(name='SettingCanvas',
                                                                                                        bot_folder=folder,
-                                                                                                       settings=bot_instance.settings_services))
+                                                                                                  settings=bot_instance.settings_services))
+            '''
             container.change_button_event(button='delete', 
                                        event=lambda folder=folder: self.delete_bot(folder=folder))
-            
+               
             y += 125.0
     
     def refresh(self) -> None:
