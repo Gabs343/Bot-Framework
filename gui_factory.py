@@ -18,14 +18,12 @@ class GUIFactory:
         return canvas
     
     @staticmethod
-    def get_subcanvas(parent: tk.Canvas, dimensions: tuple) -> tk.Canvas:
+    def get_subcanvas(parent: tk.Canvas, **kwargs) -> tk.Canvas:
         return tk.Canvas(parent,
-                    bg = "#112C5F",
-                    height = dimensions[1],
-                    width = dimensions[0],
                     bd = 0,
                     highlightthickness = 0,
-                    relief = "ridge")
+                    relief = "ridge",
+                    **kwargs)
     
     @staticmethod    
     def get_button(parent: tk.Canvas, icon: str, isEnabled: bool = False, event=None) -> tk.Button:
