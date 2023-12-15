@@ -13,7 +13,7 @@ class SettingCanvas(tk.Canvas):
         self.create_gui_elements()
               
     def create_gui_elements(self):
-        self.subcanvas: tk.Canvas = GUIFactory.get_subcanvas(parent=self, width=897, height=335, bg='black')
+        self.subcanvas: tk.Canvas = GUIFactory.get_subcanvas(parent=self, width=897, height=335, bg='#112C5F')
         self.subcanvas.place(x=70, y=75)
         
         self.scrollbar = tk.Scrollbar(self, orient=tk.VERTICAL, command=self.subcanvas.yview)

@@ -48,7 +48,6 @@ class PrincipalCanvas(tk.Canvas):
         )
         
         self.refresh()
-        self.create_bots_containers()
         
     def on_configure(self, event=None) -> None:
         self.subcanvas.configure(scrollregion=self.subcanvas.bbox("all"))
@@ -60,15 +59,15 @@ class PrincipalCanvas(tk.Canvas):
     def create_bots_containers(self) -> None:
         y: float = 8.0
         for folder, bot_instance in self.__bot_instances.items():
+
             container = BotContainerComponent(parent=self.subcanvas,
+                                              bot=bot_instance,
                                               x=77.0, y=y, 
-                                              width=763.0, height=70.0,
-                                              bot=bot_instance)
-            
+                                              width=763.0, height=70.0)
             
             container.change_button_event(button='play',
                                        event=lambda bot=bot_instance: self.start_bot(bot=bot))
-            '''
+           
             container.change_button_event(button='settings', 
                                        event=lambda folder=folder, bot_instance=bot_instance: self.__parent.show_canvas(name='SettingCanvas',
                                                                                                        bot_folder=folder,
@@ -76,7 +75,7 @@ class PrincipalCanvas(tk.Canvas):
             '''
             container.change_button_event(button='delete', 
                                        event=lambda folder=folder: self.delete_bot(folder=folder))
-               
+            '''
             y += 125.0
     
     def refresh(self) -> None:
