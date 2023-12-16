@@ -67,15 +67,24 @@ class PrincipalCanvas(tk.Canvas):
             
             container.change_button_event(button='play',
                                        event=lambda bot=bot_instance: self.start_bot(bot=bot))
+            
+            container.change_button_event(button='unpause',
+                                       event=lambda: bot_instance.unpause())
+            
+            container.change_button_event(button='pause',
+                                       event=lambda: bot_instance.pause())
+            
+            container.change_button_event(button='stop',
+                                       event=lambda: bot_instance.stop())
            
             container.change_button_event(button='settings', 
                                        event=lambda folder=folder, bot_instance=bot_instance: self.__parent.show_canvas(name='SettingCanvas',
-                                                                                                       bot_folder=folder,
-                                                                                                  settings=bot_instance.settings_services))
-            '''
+                                                                                                bot_folder=folder,
+                                                                                                settings=bot_instance.settings_services))
+            
             container.change_button_event(button='delete', 
                                        event=lambda folder=folder: self.delete_bot(folder=folder))
-            '''
+
             y += 125.0
     
     def refresh(self) -> None:
