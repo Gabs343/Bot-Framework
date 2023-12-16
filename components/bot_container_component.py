@@ -25,7 +25,7 @@ class BotContainerComponent(tk.Canvas):
         self.base_x_coordinate: float = 10.0
         
         self.bot = bot
-        self.bot.set_status_changed_callback(callback=self.set_status)
+        self.bot.status_callback = self.set_status
         self.buttons_dict: dict = {}
         
         self.place_rectangle()
@@ -85,7 +85,7 @@ class BotContainerComponent(tk.Canvas):
     def set_status(self, new_status: str) -> None:
         self.status_canvas.itemconfig(self.bot_status_id, text=new_status)
         if(new_status == 'RUNNING'):
-            self.change_enable_buttons(buttons=['play', 'settings', 'delete'], isEnabled=False)
+            self.change_enable_buttons(buttons=['play', 'unpause', 'settings', 'delete'], isEnabled=False)
             self.remove_buttons()
             self.change_enable_buttons(buttons=['pause', 'stop'], isEnabled=True)
             self.place_buttons()
@@ -95,9 +95,19 @@ class BotContainerComponent(tk.Canvas):
             self.remove_buttons()
             self.change_enable_buttons(buttons=['play', 'settings', 'delete'], isEnabled=True)
             self.place_buttons()
+            
+        elif(new_status == 'PAUSED'):
+            self.change_enable_buttons(buttons=['pause', 'stop'], isEnabled=False)
+            self.remove_buttons()
+            self.change_enable_buttons(buttons=['unpause', 'stop'], isEnabled=True)
+            self.place_buttons()
+
+        elif(new_status == 'CLOSING BOT'):
+            self.change_enable_buttons(buttons=['pause', 'unpause', 'stop'], isEnabled=False)
+            self.remove_buttons()
              
     def create_buttons(self) -> None:
-        for button in ['play', 'pause', 'stop', 'settings', 'delete']:
+        for button in ['play', 'unpause', 'pause', 'stop', 'settings', 'delete']:
             self.buttons_dict[button] = {}
             self.buttons_dict[button]['object'] = GUIFactory.get_button(parent=self.buttons_canvas, icon=button)
             self.buttons_dict[button]['window_id'] = None
