@@ -13,6 +13,7 @@ class PrincipalCanvas(tk.Canvas):
         
         self.__parent: tk.Tk = parent
         self.__bot_instances: dict = {}
+        self.__containers: list[BotContainerComponent] = []
         
         self.create_gui_elements()
         
@@ -59,36 +60,43 @@ class PrincipalCanvas(tk.Canvas):
     def create_bots_containers(self) -> None:
         y: float = 8.0
         for folder, bot_instance in self.__bot_instances.items():
-
-            container = BotContainerComponent(parent=self.subcanvas,
-                                              bot=bot_instance,
-                                              x=77.0, y=y, 
-                                              width=763.0, height=70.0)
+            if(not self.exist_container(bot_name=bot_instance.bot_name)):
+    
+                container = BotContainerComponent(parent=self.subcanvas,
+                                                bot=bot_instance,
+                                                x=77.0, y=y, 
+                                                width=763.0, height=70.0)
+                
+                container.change_button_event(button='play',
+                                        event=lambda bot=bot_instance: self.start_bot(bot=bot))
+                
+                container.change_button_event(button='unpause',
+                                        event=lambda: bot_instance.unpause())
+                
+                container.change_button_event(button='pause',
+                                        event=lambda: bot_instance.pause())
+                
+                container.change_button_event(button='stop',
+                                        event=lambda: bot_instance.stop())
             
-            container.change_button_event(button='play',
-                                       event=lambda bot=bot_instance: self.start_bot(bot=bot))
-            
-            container.change_button_event(button='unpause',
-                                       event=lambda: bot_instance.unpause())
-            
-            container.change_button_event(button='pause',
-                                       event=lambda: bot_instance.pause())
-            
-            container.change_button_event(button='stop',
-                                       event=lambda: bot_instance.stop())
-           
-            container.change_button_event(button='settings', 
-                                       event=lambda folder=folder, bot_instance=bot_instance: self.__parent.show_canvas(name='SettingCanvas',
-                                                                                                bot_folder=folder,
-                                                                                                settings=bot_instance.settings_services))
-            
-            container.change_button_event(button='delete', 
-                                       event=lambda folder=folder: self.delete_bot(folder=folder))
-
+                container.change_button_event(button='settings', 
+                                        event=lambda folder=folder, bot_instance=bot_instance: self.__parent.show_canvas(name='SettingCanvas',
+                                                                                                    bot_folder=folder,
+                                                                                                    settings=bot_instance.settings_services))
+                
+                container.change_button_event(button='delete', 
+                                        event=lambda folder=folder, container=container: self.delete_bot(folder=folder, container=container))
+                
+                self.__containers.append(container)
+            else:
+                container = self.get_container(bot_name=bot_instance.bot_name)
+            container.place(x=77.0, y=y)
             y += 125.0
+
     
     def refresh(self) -> None:
-        self.subcanvas.delete("all")
+        self.delete_containers()
+
         self.__parent.create_bots_folder()
         bots_folders: list[str] = [folder_name for folder_name in os.listdir(self.__parent.bots_folder_path)]
         new_instances: dict = {}
@@ -120,11 +128,31 @@ class PrincipalCanvas(tk.Canvas):
         thread = threading.Thread(target=bot.start)
         thread.start()
             
-    def delete_bot(self, folder: str) -> None:
+    def delete_bot(self, folder: str, container: BotContainerComponent) -> None:
         msg_delete: str = messagebox.askquestion('Delete Bot', 'Are you sure you want to delete this bot?',
                                 icon='warning')
         if(msg_delete == "yes"):
             shutil.rmtree(f'{self.__parent.bots_folder_path}\\{folder}')
+            container.destroy()
+            self.__containers.remove(container)
         self.refresh()
         
+    def exist_container(self, bot_name: str) -> bool:
+        if(self.__containers):
+            for container in self.__containers:
+                if container.bot.bot_name == bot_name:
+                    return True
+        return False
+    
+    def get_container(self, bot_name: str) -> BotContainerComponent:
+        for container in self.__containers:
+                if container.bot.bot_name == bot_name:
+                    return container
+        return None
+        
+    def delete_containers(self) -> None:
+        for container in self.__containers:
+            if(not container.is_busy):   
+                container.destroy()
+                self.__containers.remove(container)
     
