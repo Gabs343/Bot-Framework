@@ -10,8 +10,10 @@ class BotContainerComponent(tk.Canvas):
                         bd = 0,
                         highlightthickness = 0,
                         relief = 'ridge')
-        self.place(x=kwargs['x'], y=kwargs['y'])
+        
         self.background: str = '#577190'
+        
+        self.is_busy: bool = False
         
         self.x_coordinate: float = kwargs['x']
         self.y_coordinate: float = kwargs['y']
@@ -89,22 +91,26 @@ class BotContainerComponent(tk.Canvas):
             self.remove_buttons()
             self.change_enable_buttons(buttons=['pause', 'stop'], isEnabled=True)
             self.place_buttons()
+            self.is_busy = True
             
         elif(new_status == 'READY'):
             self.change_enable_buttons(buttons=['pause', 'stop'], isEnabled=False)
             self.remove_buttons()
             self.change_enable_buttons(buttons=['play', 'settings', 'delete'], isEnabled=True)
             self.place_buttons()
+            self.is_busy = False
             
         elif(new_status == 'PAUSED'):
             self.change_enable_buttons(buttons=['pause', 'stop'], isEnabled=False)
             self.remove_buttons()
             self.change_enable_buttons(buttons=['unpause', 'stop'], isEnabled=True)
             self.place_buttons()
+            self.is_busy = True
 
         elif(new_status == 'CLOSING BOT'):
             self.change_enable_buttons(buttons=['pause', 'unpause', 'stop'], isEnabled=False)
             self.remove_buttons()
+            self.is_busy = True
              
     def create_buttons(self) -> None:
         for button in ['play', 'unpause', 'pause', 'stop', 'settings', 'delete']:
